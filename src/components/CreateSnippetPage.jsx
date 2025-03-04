@@ -34,10 +34,24 @@ const SnippetCreatorPage = () => {
         status: 'Draft',
     }
 
-const handleChange {}
-
-const handleSubmit {}
-const handleCopy{}
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    };
+  
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      console.log('Submitted:', formData);
+      // Add API call to save the snippet here
+    };
+  
+    const handleCopy = () => {
+      navigator.clipboard.writeText(formData.code);
+      //successnotification here?
+    };
 
 return (
     //create container, sx prop for custom styling, md for medium width
@@ -105,7 +119,55 @@ return (
   </Grid>
 {/* //code editor */}
   <Grid item xs={12}>
-    
+  <Box sx={{ position: 'relative', mt: 2 }}>
+                <Typography sx={{ position: 'absolute', top: 10, left: 10 }}>
+                  Code Editor
+                </Typography>
+                <IconButton 
+                  sx={{ position: 'absolute', top: 5, right: 5 }}
+                  onClick={handleCopy}
+                >
+                  <Typography variant="caption" sx={{ mr: 0.5 }}>Copy</Typography>
+                  <ContentCopyIcon fontSize="small" />
+                </IconButton>
+                <TextField
+                  name="code"
+                  multiline
+                  fullWidth
+                  rows={8}
+                  variant="outlined"
+                  value={formData.code}
+                  onChange={handleChange}
+                  sx={{ 
+                    '& .MuiOutlinedInput-root': {
+                      pt: 5,
+                      fontFamily: 'monospace'
+                    }
+                  }}
+                />
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <Box sx={{ position: 'relative', mt: 2 }}>
+                <Typography sx={{ position: 'absolute', top: 10, left: 10 }}>
+                  Description
+                </Typography>
+                <TextField
+                name="description"
+                multiline
+                fullWidth
+                rows={3}
+                variant="outlined"
+                value={formData.description}
+                onChange={handleChange}
+                sx={{
+                  '& .MuiOutlinedInput-root' : {
+                    pt: 5
+                  }
+                }}
+                />
+</Box>
+};
 )
 
 }
