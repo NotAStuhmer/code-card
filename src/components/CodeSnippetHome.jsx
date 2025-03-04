@@ -15,7 +15,7 @@ import {
   ThemeProvider,
   createTheme,
 } from '@mui/material';
-import NavBar from './components/NavBar';
+import NavBar from './NavBar';
 
 const cards = [
   {
@@ -42,12 +42,6 @@ const cards = [
     description: 'This is where the prompt will be',
     //how to access embedded code
   },
-  {
-    id: 5,
-    title: 'Snippet 5',
-    description: 'This is where the prompt will be',
-    //how to access embedded code
-  },
 ];
 
 const darkTheme = createTheme({
@@ -63,19 +57,9 @@ export default function CodeSnippetHome() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <AppBar position='relative'>
-        <Toolbar>
-          <Typography variant='h6' noWrap>
-            Code Card
-          </Typography>
-          <Box sx={{ flexGrow: 1 }} />
-          <Button color='#E06A34'>Home</Button>
-          <Button color='#E06A34'>Cards</Button>
-          <Button color='#E06A34'>About</Button>
-        </Toolbar>
-      </AppBar>
+      <AppBar />
       <main>
-        <Box
+        {/* <Box
           sx={{
             bgcolor: '#373C3E',
             pt: 8,
@@ -93,7 +77,7 @@ export default function CodeSnippetHome() {
               Code Card
             </Typography>
           </Container>
-        </Box>
+        </Box> */}
         <Container sx={{ py: 8 }} maxWidth='lg'>
           <Grid2 container spacing={4}>
             {cards.map((card) => (

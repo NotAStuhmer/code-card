@@ -13,6 +13,18 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
+//   position='relative'>
+//     <Toolbar>
+//       <Typography variant='h6' noWrap>
+//         Code Card
+//       </Typography>
+//       <Box sx={{ flexGrow: 1 }} />
+//       <Button color='#E06A34'>Home</Button>
+//       <Button color='#E06A34'>Cards</Button>
+//       <Button color='#E06A34'>About</Button>
+//     </Toolbar>
+//   </AppBar>
+
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
@@ -24,7 +36,7 @@ function NavBar() {
     setAnchorElNav(null);
   };
 
-  const pages = ['Home', 'Products', 'About', 'Contact'];
+  const pages = ['Cards', 'About'];
 
   return (
     <AppBar position='static'>
