@@ -30,6 +30,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import { motion } from 'framer-motion';
 import { theme } from '../theme';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 // Background animation component
 const BackgroundAnimation = () => {
@@ -312,6 +314,22 @@ export default function CodeSnippetHome() {
   const handleCancelEdit = () => {
     setEditMode(false);
     setEditedSnippet(null);
+  };
+
+  // Add a function to detect language (optional enhancement)
+  const detectLanguage = (code) => {
+    // Simple detection based on common patterns
+    if (code.includes('function') || code.includes('const') || code.includes('let') || code.includes('var')) {
+      return 'javascript';
+    } else if (code.includes('import') && code.includes('from')) {
+      return 'jsx';
+    } else if (code.includes('class') && code.includes('public')) {
+      return 'java';
+    } else if (code.includes('def ') && code.includes(':')) {
+      return 'python';
+    }
+    // Default fallback
+    return 'javascript';
   };
 
   return (
@@ -656,19 +674,18 @@ export default function CodeSnippetHome() {
                   <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
                     Code:
                   </Typography>
-                  <TextField
-                    name="code"
-                    value={editedSnippet.code}
-                    onChange={handleEditChange}
-                    fullWidth
-                    variant="outlined"
-                    multiline
-                    rows={8}
-                    sx={{ 
-                      fontFamily: 'monospace',
-                      backgroundColor: 'rgba(0,0,0,0.3)',
+                  <SyntaxHighlighter
+                    language={detectLanguage(editedSnippet.code)}
+                    style={vscDarkPlus}
+                    customStyle={{
+                      margin: 0,
+                      borderRadius: '4px',
+                      fontSize: '0.9rem',
                     }}
-                  />
+                    wrapLongLines={true}
+                  >
+                    {editedSnippet.code}
+                  </SyntaxHighlighter>
                 </>
               ) : (
                 <>
@@ -678,19 +695,19 @@ export default function CodeSnippetHome() {
                   <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
                     Code:
                   </Typography>
-                  <Box 
-                    sx={{ 
-                      backgroundColor: 'rgba(0,0,0,0.3)',
-                      p: 2,
-                      borderRadius: 1,
-                      overflowX: 'auto',
-                      fontFamily: 'monospace',
-                      fontSize: '0.9rem',
-                      whiteSpace: 'pre-wrap',
-                      wordBreak: 'break-all'
-                    }}
-                  >
-                    {selectedSnippet.code}
+                  <Box sx={{ borderRadius: 1, overflow: 'hidden' }}>
+                    <SyntaxHighlighter
+                      language={detectLanguage(selectedSnippet.code)}
+                      style={vscDarkPlus}
+                      customStyle={{
+                        margin: 0,
+                        borderRadius: '4px',
+                        fontSize: '0.9rem',
+                      }}
+                      wrapLongLines={true}
+                    >
+                      {selectedSnippet.code}
+                    </SyntaxHighlighter>
                   </Box>
                 </>
               )}
