@@ -1,22 +1,34 @@
 import {
   getAllSnippets,
   getSnippetById,
+  getSnippetsByCategory,
   createSnippet,
   updateSnippet,
   deleteSnippet,
 } from '../models/snippetModel.js';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import { Autocomplete } from '@mui/material';
 
-//get all snippets
+// Get all snippets
 const getAllSnippetsController = async (req, res, next) => {
   try {
-    const snippets = await getAllSnippets();
+    // Check if category filter is provided
+    const { category } = req.query;
+    
+    let snippets;
+    if (category) {
+      snippets = await getSnippetsByCategory(category);
+    } else {
+      snippets = await getAllSnippets();
+    }
+    
     res.status(200).json(snippets);
   } catch (error) {
     next(error);
   }
 };
 
-//get single snippet by id
+// Get single snippet by id
 const getSnippetByIdController = async (req, res, next) => {
   try {
     const snippet = await getSnippetById(req.params.id);
@@ -33,7 +45,7 @@ const getSnippetByIdController = async (req, res, next) => {
 //create a new snippet
 const createSnippetController = async (req, res, next) => {
   try {
-    const { title, description, difficulty, code } = req.body;
+    const { title, description, difficulty, code, category } = req.body;
     if (!code) {
       res.status(400);
       throw new Error('Code is required');
@@ -43,6 +55,7 @@ const createSnippetController = async (req, res, next) => {
       description: description || '',
       difficulty: difficulty || 'Easy',
       code,
+      category: category || 'Uncategorized',
     });
     res.status(201).json({ message: '✅ Snippet created', createdSnippet });
   } catch (error) {
@@ -53,7 +66,7 @@ const createSnippetController = async (req, res, next) => {
 //update an existing snippet
 const updateSnippetController = async (req, res, next) => {
   try {
-    const { title, description, difficulty, code } = req.body;
+    const { title, description, difficulty, code, category } = req.body;
     const snippet = await getSnippetById(req.params.id);
 
     //check if the snippet exists
@@ -67,6 +80,7 @@ const updateSnippetController = async (req, res, next) => {
       description: description || snippet.description || '',
       difficulty: difficulty || snippet.difficulty || 'undefined',
       code: code || snippet.code,
+      category: category || snippet.category || 'Uncategorized',
     });
     res.status(200).json({ message: '✅ Snippet updated', updatedSnippet });
   } catch (error) {

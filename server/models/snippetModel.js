@@ -4,7 +4,16 @@ import pool from '../config/database.js';
 export const getAllSnippets = async () => {
   const { rows } = await pool.query(
     'SELECT * FROM snippets ORDER BY created_at DESC'
-  ); // Example: Can be modified
+  );
+  return rows;
+};
+
+// Get snippets by category
+export const getSnippetsByCategory = async (category) => {
+  const { rows } = await pool.query(
+    'SELECT * FROM snippets WHERE category = $1 ORDER BY created_at DESC',
+    [category]
+  );
   return rows;
 };
 
@@ -16,18 +25,17 @@ export const getSnippetById = async (id) => {
   return rows[0];
 };
 
-
-
 // Create a new snippet
 export const createSnippet = async ({
   title,
   description,
   difficulty,
   code,
+  category,
 }) => {
   const { rows } = await pool.query(
-    'INSERT INTO snippets (title, description, difficulty, code) VALUES ($1, $2, $3, $4) RETURNING *', // Can be modified based on props being saved into snippet
-    [title, description, difficulty, code]
+    'INSERT INTO snippets (title, description, difficulty, code, category) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+    [title, description, difficulty, code, category]
   );
   return rows[0];
 };
@@ -35,11 +43,11 @@ export const createSnippet = async ({
 // Update an existing snippet
 export const updateSnippet = async (
   id,
-  { title, description, difficulty, code }
+  { title, description, difficulty, code, category }
 ) => {
   const { rows } = await pool.query(
-    'UPDATE snippets SET title = $1, description = $2, difficulty = $3, code = $4 WHERE id = $5 RETURNING *', // Also can be modified based on props being saved during snippet construction
-    [title, description, difficulty, code, id]
+    'UPDATE snippets SET title = $1, description = $2, difficulty = $3, code = $4, category = $5 WHERE id = $6 RETURNING *',
+    [title, description, difficulty, code, category, id]
   );
   return rows[0];
 };
