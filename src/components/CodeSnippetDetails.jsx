@@ -91,7 +91,7 @@ const CodeSnippetDetailsPage = () => {
           </Typography>
 
           <Grid2 container spacing={2}>
-            <Grid2 xs={12}>
+            <Grid2 size={12}>
               <TextField
                 name='title'
                 label='Title'
@@ -103,7 +103,7 @@ const CodeSnippetDetailsPage = () => {
               />
             </Grid2>
 
-            <Grid2 xs={12}>
+            <Grid2 size={12}>
               <Box sx={{ position: 'relative', mb: 2 }}>
                 <Typography
                   sx={{ position: 'absolute', top: 10, left: 10, zIndex: 1 }}
@@ -127,7 +127,7 @@ const CodeSnippetDetailsPage = () => {
               </Box>
             </Grid2>
 
-            <Grid2 xs={12}>
+            <Grid2 size={12}>
               <Box sx={{ position: 'relative', mb: 2 }}>
                 <Typography
                   sx={{ position: 'absolute', top: 10, left: 10, zIndex: 1 }}

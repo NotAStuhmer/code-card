@@ -59,6 +59,7 @@ export default function CodeSnippetHome() {
       <CssBaseline />
       <AppBar />
       <main>
+        <Button>Add Snippet</Button>
         {/* <Box
           sx={{
             bgcolor: '#373C3E',
