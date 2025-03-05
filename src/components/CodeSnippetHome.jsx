@@ -674,18 +674,22 @@ export default function CodeSnippetHome() {
                   <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
                     Code:
                   </Typography>
-                  <SyntaxHighlighter
-                    language={detectLanguage(editedSnippet.code)}
-                    style={vscDarkPlus}
-                    customStyle={{
-                      margin: 0,
-                      borderRadius: '4px',
-                      fontSize: '0.9rem',
+                  <TextField
+                    name="code"
+                    value={editedSnippet.code}
+                    onChange={handleEditChange}
+                    fullWidth
+                    variant="outlined"
+                    multiline
+                    rows={10}
+                    sx={{ 
+                      mb: 2,
+                      fontFamily: 'monospace',
+                      '& .MuiInputBase-input': {
+                        fontFamily: 'monospace',
+                      }
                     }}
-                    wrapLongLines={true}
-                  >
-                    {editedSnippet.code}
-                  </SyntaxHighlighter>
+                  />
                 </>
               ) : (
                 <>
