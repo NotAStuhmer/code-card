@@ -93,6 +93,9 @@ export default function CodeSnippetHome() {
   // Add state for delete confirmation dialog
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [snippetToDelete, setSnippetToDelete] = useState(null);
+  // Add state for edit mode
+  const [editMode, setEditMode] = useState(false);
+  const [editedSnippet, setEditedSnippet] = useState(null);
 
   // Fetch snippets from the server
   const fetchSnippets = async () => {
@@ -248,6 +251,67 @@ export default function CodeSnippetHome() {
       });
       setDeleteConfirmOpen(false);
     }
+  };
+
+  // Add handler for edit button
+  const handleEditClick = () => {
+    setEditedSnippet({...selectedSnippet});
+    setEditMode(true);
+  };
+
+  // Add handler for edit changes
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditedSnippet({
+      ...editedSnippet,
+      [name]: value
+    });
+  };
+
+  // Add handler for saving edits
+  const handleSaveEdit = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/snippets/${editedSnippet.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editedSnippet),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+      // Update the selected snippet with edited values
+      setSelectedSnippet(editedSnippet);
+      
+      // Exit edit mode
+      setEditMode(false);
+      
+      // Show success message
+      setSnackbar({
+        open: true,
+        message: 'Snippet updated successfully!',
+        severity: 'success'
+      });
+      
+      // Refresh the snippets list
+      fetchSnippets();
+    } catch (error) {
+      console.error('Error updating snippet:', error);
+      setSnackbar({
+        open: true,
+        message: `Error updating snippet: ${error.message}`,
+        severity: 'error'
+      });
+    }
+  };
+
+  // Add handler to cancel edit
+  const handleCancelEdit = () => {
+    setEditMode(false);
+    setEditedSnippet(null);
   };
 
   return (
@@ -526,51 +590,110 @@ export default function CodeSnippetHome() {
                 alignItems: 'center'
               }}
             >
-              <Typography variant="h5" component="div" sx={{ color: '#FFA726', fontWeight: 500 }}>
-                {selectedSnippet.title}
-              </Typography>
-              <Typography 
-                variant="caption" 
-                sx={{ 
-                  display: 'inline-block',
-                  backgroundColor: 
-                    selectedSnippet.difficulty === 'Easy' ? 'rgba(46, 204, 113, 0.2)' : 
-                    selectedSnippet.difficulty === 'Medium' ? 'rgba(241, 196, 15, 0.2)' : 
-                    'rgba(231, 76, 60, 0.2)',
-                  color: 
-                    selectedSnippet.difficulty === 'Easy' ? '#2ecc71' : 
-                    selectedSnippet.difficulty === 'Medium' ? '#f1c40f' : 
-                    '#e74c3c',
-                  px: 1.5,
-                  py: 0.5,
-                  borderRadius: 1,
-                  fontWeight: 500
-                }}
-              >
-                {selectedSnippet.difficulty}
-              </Typography>
+              {editMode ? (
+                <TextField
+                  name="title"
+                  value={editedSnippet.title}
+                  onChange={handleEditChange}
+                  fullWidth
+                  variant="outlined"
+                  sx={{ mr: 2 }}
+                />
+              ) : (
+                <Typography variant="h5" component="div" sx={{ color: '#FFA726', fontWeight: 500 }}>
+                  {selectedSnippet.title}
+                </Typography>
+              )}
+              {editMode ? (
+                <FormControl sx={{ minWidth: 120 }}>
+                  <Select
+                    name="difficulty"
+                    value={editedSnippet.difficulty}
+                    onChange={handleEditChange}
+                    size="small"
+                  >
+                    <MenuItem value="Easy">Easy</MenuItem>
+                    <MenuItem value="Medium">Medium</MenuItem>
+                    <MenuItem value="Hard">Hard</MenuItem>
+                  </Select>
+                </FormControl>
+              ) : (
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    display: 'inline-block',
+                    backgroundColor: 
+                      selectedSnippet.difficulty === 'Easy' ? 'rgba(46, 204, 113, 0.2)' : 
+                      selectedSnippet.difficulty === 'Medium' ? 'rgba(241, 196, 15, 0.2)' : 
+                      'rgba(231, 76, 60, 0.2)',
+                    color: 
+                      selectedSnippet.difficulty === 'Easy' ? '#2ecc71' : 
+                      selectedSnippet.difficulty === 'Medium' ? '#f1c40f' : 
+                      '#e74c3c',
+                    px: 1.5,
+                    py: 0.5,
+                    borderRadius: 1,
+                    fontWeight: 500
+                  }}
+                >
+                  {selectedSnippet.difficulty}
+                </Typography>
+              )}
             </DialogTitle>
             <DialogContent sx={{ pt: 3 }}>
-              <Typography variant="body1" sx={{ mb: 3 }}>
-                {selectedSnippet.description}
-              </Typography>
-              <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
-                Code:
-              </Typography>
-              <Box 
-                sx={{ 
-                  backgroundColor: 'rgba(0,0,0,0.3)',
-                  p: 2,
-                  borderRadius: 1,
-                  overflowX: 'auto',
-                  fontFamily: 'monospace',
-                  fontSize: '0.9rem',
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-all'
-                }}
-              >
-                {selectedSnippet.code}
-              </Box>
+              {editMode ? (
+                <>
+                  <TextField
+                    name="description"
+                    value={editedSnippet.description}
+                    onChange={handleEditChange}
+                    fullWidth
+                    variant="outlined"
+                    multiline
+                    rows={3}
+                    sx={{ mb: 3 }}
+                  />
+                  <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
+                    Code:
+                  </Typography>
+                  <TextField
+                    name="code"
+                    value={editedSnippet.code}
+                    onChange={handleEditChange}
+                    fullWidth
+                    variant="outlined"
+                    multiline
+                    rows={8}
+                    sx={{ 
+                      fontFamily: 'monospace',
+                      backgroundColor: 'rgba(0,0,0,0.3)',
+                    }}
+                  />
+                </>
+              ) : (
+                <>
+                  <Typography variant="body1" sx={{ mb: 3 }}>
+                    {selectedSnippet.description}
+                  </Typography>
+                  <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
+                    Code:
+                  </Typography>
+                  <Box 
+                    sx={{ 
+                      backgroundColor: 'rgba(0,0,0,0.3)',
+                      p: 2,
+                      borderRadius: 1,
+                      overflowX: 'auto',
+                      fontFamily: 'monospace',
+                      fontSize: '0.9rem',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-all'
+                    }}
+                  >
+                    {selectedSnippet.code}
+                  </Box>
+                </>
+              )}
             </DialogContent>
             <DialogActions sx={{ 
               px: 3, 
@@ -580,26 +703,64 @@ export default function CodeSnippetHome() {
               display: 'flex',
               justifyContent: 'space-between'
             }}>
-              <Button 
-                onClick={() => handleDeleteClick(selectedSnippet)} 
-                variant="contained" 
-                color="error"
-                sx={{
-                  backgroundColor: 'rgba(231, 76, 60, 0.8)',
-                  '&:hover': {
-                    backgroundColor: 'rgba(231, 76, 60, 1)',
-                  }
-                }}
-              >
-                Delete
-              </Button>
-              <Button 
-                onClick={handleViewModalClose} 
-                variant="contained" 
-                color="primary"
-              >
-                Close
-              </Button>
+              {editMode ? (
+                <>
+                  <Button 
+                    onClick={handleCancelEdit}
+                    color="inherit"
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={handleSaveEdit} 
+                    variant="contained" 
+                    color="primary"
+                    startIcon={<EditIcon />}
+                  >
+                    Save Changes
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Box>
+                    <Button 
+                      onClick={() => handleDeleteClick(selectedSnippet)} 
+                      variant="contained" 
+                      color="error"
+                      sx={{
+                        backgroundColor: 'rgba(231, 76, 60, 0.8)',
+                        '&:hover': {
+                          backgroundColor: 'rgba(231, 76, 60, 1)',
+                        },
+                        mr: 1
+                      }}
+                    >
+                      Delete
+                    </Button>
+                    <Button 
+                      onClick={handleEditClick} 
+                      variant="contained" 
+                      color="secondary"
+                      startIcon={<EditIcon />}
+                      sx={{
+                        backgroundColor: '#9C27B0',
+                        '&:hover': {
+                          backgroundColor: '#AB47BC',
+                        }
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  </Box>
+                  <Button 
+                    onClick={handleViewModalClose} 
+                    variant="contained" 
+                    color="primary"
+                  >
+                    Close
+                  </Button>
+                </>
+              )}
             </DialogActions>
           </>
         )}
