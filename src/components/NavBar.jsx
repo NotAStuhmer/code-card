@@ -1,54 +1,61 @@
 // src/components/NavBar.jsx
 import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   AppBar,
   Box,
   Button,
   Toolbar,
   Typography,
-  IconButton,
-  Menu,
-  MenuItem,
   Container,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import logo from '../assets/codecard_logo.png';
 
 function NavBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const pages = ['Cards', 'About'];
+  const pages = [
+    { name: 'About', path: '/about' }
+  ];
 
   return (
-    <AppBar position='static' sx={{ backgroundColor: '#893a33' }}>
+    <AppBar 
+      position='static' 
+      sx={{ 
+        backgroundColor: '#893a33',
+        borderRadius: '0 0 16px 16px', // Rounded bottom corners
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+      }}
+    >
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           {/* Desktop Logo */}
           <Box
-            component='img'
-            src={logo}
-            alt='code card logo'
+            component={RouterLink}
+            to="/"
             sx={{
-              height: 40,
-              mr: 1,
+              display: 'flex',
+              alignItems: 'center',
+              textDecoration: 'none',
+              color: 'inherit'
             }}
-          ></Box>
-          <Typography
-            variant='h6'
-            noWrap
-            component='div'
-            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
-            Code Card
-          </Typography>
+            <Box
+              component='img'
+              src={logo}
+              alt='code card logo'
+              sx={{
+                height: 40,
+                mr: 1,
+              }}
+            />
+            <Typography
+              variant='h6'
+              noWrap
+              component='div'
+              sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+            >
+              Code Card
+            </Typography>
+          </Box>
 
           {/* Desktop Menu Items */}
           <Box
@@ -60,11 +67,19 @@ function NavBar() {
           >
             {pages.map((page) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                key={page.name}
+                component={RouterLink}
+                to={page.path}
+                sx={{ 
+                  my: 2, 
+                  color: 'white', 
+                  display: 'block',
+                  mx: 1,
+                  px: 2,
+                  borderRadius: 2
+                }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>
