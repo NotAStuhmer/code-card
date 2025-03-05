@@ -23,6 +23,7 @@ import {
   ThemeProvider,
   Snackbar,
   Alert,
+  Chip,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
@@ -32,6 +33,8 @@ import { motion } from 'framer-motion';
 import { theme } from '../theme';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import { algorithmTopics } from '../data/algorithmTopics.js';
 
 // Background animation component
 const BackgroundAnimation = () => {
@@ -98,6 +101,9 @@ export default function CodeSnippetHome() {
   // Add state for edit mode
   const [editMode, setEditMode] = useState(false);
   const [editedSnippet, setEditedSnippet] = useState(null);
+  const [categoryFilter, setCategoryFilter] = useState([]);
+  // Add state for filtered snippets
+  const [filteredSnippets, setFilteredSnippets] = useState([]);
 
   // Fetch snippets from the server
   const fetchSnippets = async () => {
@@ -112,6 +118,9 @@ export default function CodeSnippetHome() {
       const data = await response.json();
       console.log('Fetched snippets:', data); // Add logging to debug
       setSnippets(data);
+      
+      // Apply any existing filters
+      applyFilters(data);
     } catch (error) {
       console.error('Error fetching snippets:', error);
       setSnackbar({
@@ -332,6 +341,28 @@ export default function CodeSnippetHome() {
     return 'javascript';
   };
 
+  const handleCategoryToggle = (category) => {
+    if (categoryFilter.includes(category)) {
+      setCategoryFilter(categoryFilter.filter((c) => c !== category));
+    } else {
+      setCategoryFilter([...categoryFilter, category]);
+    }
+  };
+
+  // Add a function to apply filters
+  const applyFilters = (snippetsToFilter = snippets) => {
+    if (categoryFilter.length === 0) {
+      // If no categories selected, show all snippets
+      setFilteredSnippets(snippetsToFilter);
+    } else {
+      // Filter snippets by selected categories
+      const filtered = snippetsToFilter.filter(snippet => 
+        categoryFilter.includes(snippet.category || "Uncategorized")
+      );
+      setFilteredSnippets(filtered);
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -347,57 +378,148 @@ export default function CodeSnippetHome() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
+        
         <Box 
           sx={{ 
             display: 'flex', 
-            justifyContent: 'flex-end',
-            alignItems: 'center', 
+            flexDirection: 'column',
             mb: 5,
             pb: 3,
-            borderBottom: '1px solid rgba(255,255,255,0.08)'
+            borderBottom: '1px solid rgba(255,255,255,0.12)'
           }}
           component={motion.div}
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={handleClickOpen}
-            startIcon={<AddIcon />}
-            sx={{ 
-              px: 3,
-              py: 1.2,
-              fontSize: '0.95rem',
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 3
+          }}>
+            <Typography variant="h5" sx={{ 
+              display: 'flex', 
+              alignItems: 'center',
               fontWeight: 500,
-              borderRadius: '8px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-              backgroundColor: '#FFA726',
-              '&:hover': {
-                backgroundColor: '#FFB74D',
-                boxShadow: '0 6px 16px rgba(0,0,0,0.15)',
-              }
-            }}
-            component={motion.button}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            Add Card
-          </Button>
+              color: 'rgba(255,255,255,0.9)'
+            }}>
+              <FilterListIcon sx={{ mr: 1.5, color: '#FFA726' }} />
+              Categories
+            </Typography>
+            
+            <Button 
+              variant="contained" 
+              color="primary" 
+              onClick={handleClickOpen}
+              startIcon={<AddIcon />}
+              sx={{ 
+                px: 3.5,
+                py: 1.5,
+                fontSize: '1rem',
+                fontWeight: 500,
+                borderRadius: '12px',
+                boxShadow: '0 6px 16px rgba(255, 167, 38, 0.3)',
+                backgroundColor: '#FFA726',
+                '&:hover': {
+                  backgroundColor: '#FFB74D',
+                  boxShadow: '0 8px 20px rgba(255, 167, 38, 0.4)',
+                  transform: 'translateY(-2px)'
+                },
+                transition: 'all 0.2s ease'
+              }}
+              component={motion.button}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Add Card
+            </Button>
+          </Box>
+          
+          {/* Category chips with improved styling */}
+          <Box sx={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            gap: 1.2,
+            mx: -0.5,
+            pb: 1
+          }}>
+            {algorithmTopics.map((category) => (
+              <Chip
+                key={category}
+                label={category}
+                onClick={() => handleCategoryToggle(category)}
+                color={categoryFilter.includes(category) ? "primary" : "default"}
+                variant={categoryFilter.includes(category) ? "filled" : "outlined"}
+                sx={{ 
+                  borderRadius: '20px',
+                  py: 2.5,
+                  px: 0.5,
+                  fontSize: '0.9rem',
+                  fontWeight: categoryFilter.includes(category) ? 500 : 400,
+                  transition: 'all 0.2s ease',
+                  borderColor: 'rgba(255,255,255,0.15)',
+                  backgroundColor: categoryFilter.includes(category) 
+                    ? '#FFA726' 
+                    : 'rgba(255, 255, 255, 0.04)',
+                  '&:hover': {
+                    backgroundColor: categoryFilter.includes(category) 
+                      ? '#FFB74D' 
+                      : 'rgba(255, 255, 255, 0.08)',
+                    boxShadow: categoryFilter.includes(category)
+                      ? '0 4px 12px rgba(255, 167, 38, 0.3)'
+                      : 'none'
+                  },
+                  '& .MuiChip-label': {
+                    px: 1.5
+                  }
+                }}
+              />
+            ))}
+          </Box>
         </Box>
         
         <Grid container spacing={4}>
+          {/* Add snippet count */}
+          <Grid item xs={12}>
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 2,
+              mt: 1
+            }}>
+              <Typography variant="body2" color="text.secondary">
+                {loading ? 'Loading snippets...' : 
+                  `Showing ${filteredSnippets.length} of ${snippets.length} snippets`}
+              </Typography>
+              
+              {categoryFilter.length > 0 && (
+                <Button 
+                  size="small" 
+                  onClick={() => setCategoryFilter([])}
+                  startIcon={<FilterListIcon />}
+                  sx={{ 
+                    color: 'rgba(255,255,255,0.7)',
+                    textTransform: 'none'
+                  }}
+                >
+                  Clear filters
+                </Button>
+              )}
+            </Box>
+          </Grid>
+          
           {loading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', mt: 4 }}>
               <Typography variant="h6" color="text.secondary">Loading snippets...</Typography>
             </Box>
-          ) : snippets.length === 0 ? (
+          ) : filteredSnippets.length === 0 ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', mt: 4 }}>
               <Typography variant="h6" color="text.secondary">No snippets found. Add your first one!</Typography>
             </Box>
           ) : (
-            snippets.map((snippet) => (
+            filteredSnippets.map((snippet) => (
               <Grid item key={snippet.id} xs={12} sm={6} md={4} lg={3}>
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
