@@ -5,6 +5,7 @@ import CodeSnippetHome from './components/CodeSnippetHome'
 import AboutPage from './components/AboutPage'
 import NavBar from './components/NavBar'
 import AnimatedBackground from './components/AnimatedBackground'
+import CodePlayground from './components/CodePlayground'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<CodeSnippetHome />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/playground" element={<CodePlayground />} />
         </Routes>
       </div>
     </Router>

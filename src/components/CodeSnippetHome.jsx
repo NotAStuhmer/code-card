@@ -28,10 +28,12 @@ import { alpha } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { motion } from 'framer-motion';
 import { theme } from '../theme';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useNavigate } from 'react-router-dom';
 
 // Background animation component
 const BackgroundAnimation = () => {
@@ -98,6 +100,7 @@ export default function CodeSnippetHome() {
   // Add state for edit mode
   const [editMode, setEditMode] = useState(false);
   const [editedSnippet, setEditedSnippet] = useState(null);
+  const navigate = useNavigate();
 
   // Fetch snippets from the server
   const fetchSnippets = async () => {
@@ -330,6 +333,13 @@ export default function CodeSnippetHome() {
     }
     // Default fallback
     return 'javascript';
+  };
+
+  // Add a function to navigate to the playground with the code
+  const handleRunInPlayground = () => {
+    // Store the code in sessionStorage to retrieve it in the playground
+    sessionStorage.setItem('playgroundCode', selectedSnippet.code);
+    navigate('/playground');
   };
 
   return (
@@ -712,6 +722,24 @@ export default function CodeSnippetHome() {
                     >
                       {selectedSnippet.code}
                     </SyntaxHighlighter>
+                  </Box>
+                  
+                  {/* Replace CodeSnippetRunner with Run in Playground button */}
+                  <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleRunInPlayground}
+                      startIcon={<PlayArrowIcon />}
+                      sx={{
+                        backgroundColor: '#4CAF50',
+                        '&:hover': {
+                          backgroundColor: '#45a049',
+                        }
+                      }}
+                    >
+                      Run in Playground
+                    </Button>
                   </Box>
                 </>
               )}

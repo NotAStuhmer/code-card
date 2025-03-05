@@ -13,6 +13,7 @@ import logo from '../assets/codecard_logo.png';
 
 function NavBar() {
   const pages = [
+    { name: 'Playground', path: '/playground' },
     { name: 'About', path: '/about' }
   ];
 
