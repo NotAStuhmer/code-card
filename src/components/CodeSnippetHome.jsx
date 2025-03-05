@@ -81,7 +81,7 @@ export default function CodeSnippetHome() {
         <Container sx={{ py: 8 }} maxWidth='lg'>
           <Grid2 container spacing={4}>
             {cards.map((card) => (
-              <Grid2 item key={card.id} xs={12} sm={6} md={4}>
+              <Grid2 item key={card.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Card
                   sx={{
                     height: '100%',

@@ -5,7 +5,7 @@ import pkg from 'pg';
 const { Pool } = pkg;
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: 'postgresql://postgres.ysixmugojpkfxxhsfcjh:IfCvGxfda04jo6R@aws-0-us-west-1.pooler.supabase.com:5432/postgres',
   ssl: {
     rejectUnauthorized: false,
   },
