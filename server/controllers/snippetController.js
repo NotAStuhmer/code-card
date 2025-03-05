@@ -41,7 +41,7 @@ const createSnippetController = async (req, res, next) => {
     const createdSnippet = await createSnippet({
       title: title || 'Untitled',
       description: description || '',
-      difficulty: difficulty || 'undefined',
+      difficulty: difficulty || 'Easy',
       code,
     });
     res.status(201).json({ message: '✅ Snippet created', createdSnippet });

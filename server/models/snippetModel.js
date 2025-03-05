@@ -16,6 +16,8 @@ export const getSnippetById = async (id) => {
   return rows[0];
 };
 
+
+
 // Create a new snippet
 export const createSnippet = async ({
   title,
