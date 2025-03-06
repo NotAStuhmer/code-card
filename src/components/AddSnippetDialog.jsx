@@ -11,6 +11,7 @@ import {
   Select,
   Button
 } from '@mui/material';
+import { algorithmTopics } from '../data/algorithmTopics.js';
 
 const AddSnippetDialog = ({ 
   open, 
@@ -126,15 +127,11 @@ const AddSnippetDialog = ({
             label='Category'
             onChange={handleChange}
           >
-            <MenuItem value='Uncategorized'>Uncategorized</MenuItem>
-            <MenuItem value='Arrays'>Arrays</MenuItem>
-            <MenuItem value='Strings'>Strings</MenuItem>
-            <MenuItem value='Linked Lists'>Linked Lists</MenuItem>
-            <MenuItem value='Trees'>Trees</MenuItem>
-            <MenuItem value='Graphs'>Graphs</MenuItem>
-            <MenuItem value='Dynamic Programming'>Dynamic Programming</MenuItem>
-            <MenuItem value='Sorting'>Sorting</MenuItem>
-            <MenuItem value='Searching'>Searching</MenuItem>
+            {algorithmTopics.map((topic) => (
+              <MenuItem key={topic} value={topic}>
+                {topic}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <TextField

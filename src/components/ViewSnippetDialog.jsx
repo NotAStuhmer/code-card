@@ -10,7 +10,8 @@ import {
   MenuItem,
   Button,
   Typography,
-  Box
+  Box,
+  InputLabel
 } from '@mui/material';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -19,6 +20,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { useNavigate } from 'react-router-dom';
 import { copyToClipboard, detectLanguage } from '../utils/codeUtils';
+import { algorithmTopics } from '../data/algorithmTopics.js';
 
 const ViewSnippetDialog = ({
   open,
@@ -167,24 +169,20 @@ const ViewSnippetDialog = ({
                   <MenuItem value="Hard">Hard</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl fullWidth>
+              <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel id="category-label">Category</InputLabel>
                 <Select
                   labelId="category-label"
                   name="category"
-                  value={editedSnippet?.category || 'Uncategorized'}
+                  value={editedSnippet.category || 'Uncategorized'}
                   label="Category"
                   onChange={handleEditChange}
                 >
-                  <MenuItem value="Uncategorized">Uncategorized</MenuItem>
-                  <MenuItem value="Arrays">Arrays</MenuItem>
-                  <MenuItem value="Strings">Strings</MenuItem>
-                  <MenuItem value="Linked Lists">Linked Lists</MenuItem>
-                  <MenuItem value="Trees">Trees</MenuItem>
-                  <MenuItem value="Graphs">Graphs</MenuItem>
-                  <MenuItem value="Dynamic Programming">Dynamic Programming</MenuItem>
-                  <MenuItem value="Sorting">Sorting</MenuItem>
-                  <MenuItem value="Searching">Searching</MenuItem>
+                  {algorithmTopics.map((topic) => (
+                    <MenuItem key={topic} value={topic}>
+                      {topic}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>
