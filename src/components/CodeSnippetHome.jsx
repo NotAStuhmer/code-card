@@ -70,6 +70,9 @@ export default function CodeSnippetHome() {
           py: 8,
           maxWidth: '100%',
           px: { xs: 2, sm: 3, md: 5 },
+          minHeight: '100vh',
+          position: 'relative',
+          zIndex: 1,
         }}
         component={motion.div}
         initial={{ opacity: 0 }}

@@ -22,8 +22,9 @@ const CodeCard = ({ snippet, onClick }) => {
           overflow: 'hidden',
           position: 'relative',
           borderRadius: '12px',
-          backgroundColor: '#282C34',
+          backgroundColor: '#2D3748',
           boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          border: '1px solid rgba(255,255,255,0.05)',
           cursor: 'pointer',
           transition: 'transform 0.2s, box-shadow 0.2s',
           '&:hover': {
