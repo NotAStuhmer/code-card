@@ -6,8 +6,6 @@ import {
   updateSnippet,
   deleteSnippet,
 } from '../models/snippetModel.js';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { Autocomplete } from '@mui/material';
 
 // Get all snippets
 const getAllSnippetsController = async (req, res, next) => {

@@ -38,47 +38,12 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { algorithmTopics } from '../data/algorithmTopics.js';
 import { useNavigate } from 'react-router-dom';
-
-// Background animation component
-const BackgroundAnimation = () => {
-  return (
-    <Box
-      sx={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: -1,
-        overflow: 'hidden',
-      }}
-    >
-      {[...Array(20)].map((_, i) => (
-        <motion.div
-          key={i}
-          style={{
-            position: 'absolute',
-            width: Math.random() * 3 + 1,
-            height: Math.random() * 3 + 1,
-            borderRadius: '50%',
-            backgroundColor: 'rgba(255, 255, 255, 0.15)',
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
-          }}
-          animate={{
-            y: [0, Math.random() * 100 - 50],
-            opacity: [0.1, 0.3, 0.1],
-          }}
-          transition={{
-            duration: Math.random() * 10 + 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-      ))}
-    </Box>
-  );
-};
+import AnimatedBackground from './AnimatedBackground';
+import CategoryFilter from './CategoryFilter';
+import CardContainer from './CardContainer';
+import AddSnippetDialog from './AddSnippetDialog';
+import ViewSnippetDialog from './ViewSnippetDialog';
+import DeleteConfirmDialog from './DeleteConfirmDialog';
 
 export default function CodeSnippetHome() {
   const [open, setOpen] = useState(false);
@@ -410,7 +375,7 @@ export default function CodeSnippetHome() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BackgroundAnimation />
+      <AnimatedBackground />
       <Container
         sx={{
           py: 8,
