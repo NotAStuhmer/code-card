@@ -12,10 +12,22 @@ const DeleteConfirmDialog = ({
   open, 
   handleClose, 
   snippetToDelete, 
-  handleDeleteSnippet 
+  onDeleteConfirm,
+  onShowSnackbar
 }) => {
   if (!snippetToDelete) return null;
   
+  const handleDeleteSnippet = async () => {
+    try {
+      await onDeleteConfirm(snippetToDelete.id);
+      handleClose();
+      onShowSnackbar('Snippet deleted successfully!', 'success');
+    } catch (error) {
+      onShowSnackbar(`Error deleting snippet: ${error.message}`, 'error');
+      handleClose();
+    }
+  };
+
   return (
     <Dialog
       open={open}

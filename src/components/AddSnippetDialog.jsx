@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -15,10 +15,46 @@ import {
 const AddSnippetDialog = ({ 
   open, 
   handleClose, 
-  newCard, 
-  handleChange, 
-  handleSubmit 
+  onAddSnippet,
+  onShowSnackbar
 }) => {
+  const [newCard, setNewCard] = useState({
+    title: '',
+    description: '',
+    difficulty: 'Easy',
+    code: '',
+    category: 'Uncategorized',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewCard({
+      ...newCard,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await onAddSnippet(newCard);
+      
+      // Reset form and close dialog
+      setNewCard({
+        title: '',
+        description: '',
+        difficulty: 'Easy',
+        code: '',
+        category: 'Uncategorized',
+      });
+      handleClose();
+
+      // Show success message
+      onShowSnackbar('Snippet added successfully!', 'success');
+    } catch (error) {
+      onShowSnackbar(`Error adding snippet: ${error.message}`, 'error');
+    }
+  };
+
   return (
     <Dialog
       open={open}
@@ -79,6 +115,26 @@ const AddSnippetDialog = ({
             <MenuItem value='Easy'>Easy</MenuItem>
             <MenuItem value='Medium'>Medium</MenuItem>
             <MenuItem value='Hard'>Hard</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel id='category-label'>Category</InputLabel>
+          <Select
+            labelId='category-label'
+            name='category'
+            value={newCard.category}
+            label='Category'
+            onChange={handleChange}
+          >
+            <MenuItem value='Uncategorized'>Uncategorized</MenuItem>
+            <MenuItem value='Arrays'>Arrays</MenuItem>
+            <MenuItem value='Strings'>Strings</MenuItem>
+            <MenuItem value='Linked Lists'>Linked Lists</MenuItem>
+            <MenuItem value='Trees'>Trees</MenuItem>
+            <MenuItem value='Graphs'>Graphs</MenuItem>
+            <MenuItem value='Dynamic Programming'>Dynamic Programming</MenuItem>
+            <MenuItem value='Sorting'>Sorting</MenuItem>
+            <MenuItem value='Searching'>Searching</MenuItem>
           </Select>
         </FormControl>
         <TextField

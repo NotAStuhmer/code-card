@@ -14,12 +14,10 @@ export function useSnippets() {
       return;
     }
     
-    const filtered = snippetsToFilter.filter(snippet => {
-      // Check if the snippet has at least one of the selected categories
-      // This assumes each snippet has a 'categories' array property
-      if (!snippet.categories) return false;
-      return categories.some(category => snippet.categories.includes(category));
-    });
+    // Filter snippets by selected categories
+    const filtered = snippetsToFilter.filter(snippet => 
+      categories.includes(snippet.category || "Uncategorized")
+    );
     
     setFilteredSnippets(filtered);
   };
@@ -133,12 +131,10 @@ export function useSnippets() {
       : [...categoryFilter, category];
     
     setCategoryFilter(newFilter);
-    applyFilters(snippets, newFilter);
   };
   
   const clearFilters = () => {
     setCategoryFilter([]);
-    setFilteredSnippets(snippets);
   };
 
   return {
